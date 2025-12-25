@@ -39,23 +39,29 @@ export const usePwaInstall = () => {
   }, []);
 
   const installApp = async () => {
-    if (!deferredPrompt) {
-      // For browsers that don't support beforeinstallprompt, silently return
-      // The browser will handle its own install UI
-      return;
-    }
-
-    try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      if (outcome === 'accepted') {
-        setIsInstalled(true);
+    if (deferredPrompt) {
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+          setIsInstalled(true);
+        }
+        setDeferredPrompt(null);
+        setIsInstallable(false);
+      } catch (error) {
+        console.error('Install error:', error);
       }
-      setDeferredPrompt(null);
-      setIsInstallable(false);
-    } catch (error) {
-      console.error('Install error:', error);
+    } else {
+      // Fallback for iOS Safari or browsers without beforeinstallprompt
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
+      if (isIOS && isSafari) {
+        alert('এই অ্যাপটি ইনস্টল করতে:\n\n1. Safari এর Share বাটনে ট্যাপ করুন\n2. "Add to Home Screen" অপশনটি সিলেক্ট করুন');
+      } else if (isIOS) {
+        alert('অ্যাপটি ইনস্টল করতে Safari ব্রাউজার ব্যবহার করুন।');
+      }
     }
   };
 

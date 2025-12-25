@@ -100,14 +100,14 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
             <a
               href="#"
-              className="sidebar-link bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20"
+              className="sidebar-link"
               onClick={(e) => {
                 e.preventDefault();
                 onClose();
               }}
             >
               <LinkIcon size={20} />
-              <span className="font-medium">PDF Downloads</span>
+              <span>PDF Downloads</span>
             </a>
           </div>
 

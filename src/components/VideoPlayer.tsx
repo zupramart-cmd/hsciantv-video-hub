@@ -55,6 +55,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
   };
 
   const videoId = getVideoId(embedUrl);
+  const playerId = useRef(`youtube-player-${Math.random().toString(36).substr(2, 9)}`);
 
   // Load YouTube IFrame API
   useEffect(() => {
@@ -83,14 +84,28 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
   useEffect(() => {
     if (!apiLoaded || !videoId) return;
 
+    // Reset state for new video
+    setIsReady(false);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+
     const initPlayer = () => {
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
         } catch (e) {}
+        playerRef.current = null;
       }
 
-      playerRef.current = new window.YT.Player('youtube-player', {
+      // Wait for DOM element to be ready
+      const playerElement = document.getElementById(playerId.current);
+      if (!playerElement) {
+        setTimeout(initPlayer, 100);
+        return;
+      }
+
+      playerRef.current = new window.YT.Player(playerId.current, {
         videoId: videoId,
         playerVars: {
           autoplay: 1,
@@ -107,7 +122,6 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
           origin: window.location.origin,
           enablejsapi: 1,
           start: 0,
-          // Force best quality
           vq: 'hd1080',
         },
         events: {
@@ -118,14 +132,16 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
       });
     };
 
-    // Instant initialization - no delay
-    initPlayer();
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(initPlayer, 50);
 
     return () => {
+      clearTimeout(timer);
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
         } catch (e) {}
+        playerRef.current = null;
       }
     };
   }, [apiLoaded, videoId]);
@@ -478,7 +494,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
         onTouchStart={handleTouchStart}
       >
         {/* YouTube Player */}
-        <div id="youtube-player" className="absolute inset-0 w-full h-full pointer-events-none" />
+        <div id={playerId.current} className="absolute inset-0 w-full h-full pointer-events-none" />
 
         {/* Overlay */}
         <div
@@ -627,7 +643,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* YouTube Player */}
-      <div id="youtube-player" className="absolute inset-0 w-full h-full pointer-events-none" />
+      <div id={playerId.current} className="absolute inset-0 w-full h-full pointer-events-none" />
 
       {/* Overlay */}
       <div
