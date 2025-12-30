@@ -56,7 +56,13 @@ export const usePwaInstall = () => {
   }, []);
 
   const installApp = useCallback(async () => {
-    if (isInstalled) return;
+    if (isInstalled) {
+      toast({
+        title: 'Already installed',
+        description: 'অ্যাপটি ইতিমধ্যেই ইন্সটল করা আছে।',
+      });
+      return;
+    }
 
     const prompt = promptRef.current || globalDeferredPrompt;
 

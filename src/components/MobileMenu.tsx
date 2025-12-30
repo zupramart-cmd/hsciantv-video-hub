@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Link as LinkIcon, Facebook, Youtube, MessageCircle, Send, Moon, Sun, Download, Share2, Calendar, HelpCircle } from 'lucide-react';
+import { BookOpen, FileText, Link as LinkIcon, Facebook, Youtube, MessageCircle, Send, Moon, Sun, Download, Check, Share2, Calendar, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
@@ -15,7 +15,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { theme, toggleTheme } = useTheme();
-  const { isInstalled, isInstallable, installApp } = usePwaInstall();
+  const { isInstalled, installApp } = usePwaInstall();
 
   const handleShare = async () => {
     const url = window.location.origin;
@@ -122,15 +122,17 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 <span>Share App</span>
               </button>
 
-              {isInstallable && !isInstalled && (
-                <button
-                  onClick={handleInstall}
-                  className="sidebar-link w-full text-left hover:bg-accent transition-colors"
-                >
+              <button
+                onClick={handleInstall}
+                className="sidebar-link w-full text-left hover:bg-accent transition-colors"
+              >
+                {isInstalled ? (
+                  <Check size={20} className="text-primary" />
+                ) : (
                   <Download size={20} className="text-primary" />
-                  <span>Install App</span>
-                </button>
-              )}
+                )}
+                <span>{isInstalled ? 'Installed' : 'Install App'}</span>
+              </button>
             </div>
           </div>
         </ScrollArea>
