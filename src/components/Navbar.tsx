@@ -7,7 +7,7 @@ import { APP_CONFIG } from '@/config/app';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isInstalled, installApp } = usePwaInstall();
+  const { isInstalled, isInstallable, installApp } = usePwaInstall();
 
   return (
     <>
@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between w-full">
           <Link to="/" className="text-xl font-bold text-foreground">{APP_CONFIG.name}</Link>
           <div className="flex items-center gap-2">
-            {!isInstalled && (
+            {isInstallable && !isInstalled && (
               <button onClick={installApp} className="nav-button flex items-center gap-2 text-sm">
                 <Download size={20} />
                 <span className="hidden sm:inline">Install App</span>

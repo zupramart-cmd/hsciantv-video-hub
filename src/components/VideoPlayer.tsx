@@ -26,6 +26,7 @@ declare global {
 const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
   const isMobile = useIsMobile();
   const playerRef = useRef<any>(null);
+  const playerMountRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -83,13 +84,15 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
     if (!apiLoaded || !videoId) return;
 
     const initPlayer = () => {
+      if (!playerMountRef.current) return;
+
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
         } catch (e) {}
       }
 
-      playerRef.current = new window.YT.Player('youtube-player', {
+      playerRef.current = new window.YT.Player(playerMountRef.current, {
         videoId: videoId,
         playerVars: {
           autoplay: 1,
@@ -126,7 +129,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
         } catch (e) {}
       }
     };
-  }, [apiLoaded, videoId]);
+  }, [apiLoaded, videoId, isMobile]);
 
   const onPlayerReady = (event: any) => {
     setIsReady(true);
@@ -134,6 +137,11 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
     const vol = event.target.getVolume();
     setVolume(vol || 100);
     setIsMuted(event.target.isMuted());
+
+    // Kick-start playback ASAP (browser policy may still block autoplay with sound)
+    try {
+      event.target.playVideo();
+    } catch (e) {}
   };
 
   const onPlayerStateChange = (event: any) => {
@@ -467,7 +475,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
         onTouchStart={handleTouchStart}
       >
         {/* YouTube Player */}
-        <div id="youtube-player" className="absolute inset-0 w-full h-full pointer-events-none" />
+        <div ref={playerMountRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
         {/* Overlay */}
         <div
@@ -612,7 +620,7 @@ const VideoPlayer = ({ embedUrl, title }: VideoPlayerProps) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* YouTube Player */}
-      <div id="youtube-player" className="absolute inset-0 w-full h-full pointer-events-none" />
+      <div ref={playerMountRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
       {/* Overlay */}
       <div

@@ -12,9 +12,19 @@
     <link rel="apple-touch-icon" href="/logo.jpg" />
     <title>HSCianTV</title>
     <meta name="description" content="HSC শিক্ষার্থীদের জন্য বিনামূল্যে ভিডিও লেসন" />
+
+    <!-- Performance: speed up YouTube player load -->
+    <link rel="preconnect" href="https://www.youtube.com" />
+    <link rel="preconnect" href="https://i.ytimg.com" />
+    <link rel="preconnect" href="https://s.ytimg.com" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Preload YouTube IFrame API for faster playback start -->
+    <link rel="preload" as="script" href="https://www.youtube.com/iframe_api" crossorigin>
+    <script async src="https://www.youtube.com/iframe_api"></script>
   </head>
   <body>
     <div id="root"></div>
