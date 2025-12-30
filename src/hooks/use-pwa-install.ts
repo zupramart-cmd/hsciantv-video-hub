@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -78,11 +79,17 @@ export const usePwaInstall = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isIOS = /iphone|ipad|ipod/.test(userAgent);
       const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
-      
+
       if (isIOS || isSafari) {
-        alert('অ্যাপ ইন্সটল করতে:\n\n1. Share বাটনে ক্লিক করুন\n2. "Add to Home Screen" সিলেক্ট করুন');
+        toast({
+          title: 'Safari-তে ম্যানুয়াল ইন্সটল',
+          description: 'Safari-তে অটো ইন্সটল প্রম্পট সাপোর্ট করে না। Share/Menu থেকে “Add to Home Screen / Add to Dock” ব্যবহার করুন।',
+        });
       } else {
-        alert('অ্যাপ ইন্সটল করতে:\n\nব্রাউজারের URL বারের ডান পাশে Install আইকনে ক্লিক করুন অথবা মেনু থেকে "Install App" সিলেক্ট করুন');
+        toast({
+          title: 'ইন্সটল প্রস্তুত নয়',
+          description: 'এই ব্রাউজারে অটো-ইন্সটল প্রম্পট এখনই দেখানো যাচ্ছে না। URL বারের ডান পাশে Install আইকনে ক্লিক করুন।',
+        });
       }
     }
   }, [isInstalled]);

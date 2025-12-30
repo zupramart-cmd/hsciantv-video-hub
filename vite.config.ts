@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ["logo.jpg"],
       manifest: {
         name: "HSCianTV",

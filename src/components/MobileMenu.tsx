@@ -15,7 +15,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { theme, toggleTheme } = useTheme();
-  const { isInstalled, installApp } = usePwaInstall();
+  const { isInstalled, isInstallable, installApp } = usePwaInstall();
 
   const handleShare = async () => {
     const url = window.location.origin;
@@ -122,7 +122,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 <span>Share App</span>
               </button>
 
-              {!isInstalled && (
+              {isInstallable && !isInstalled && (
                 <button
                   onClick={handleInstall}
                   className="sidebar-link w-full text-left hover:bg-accent transition-colors"
